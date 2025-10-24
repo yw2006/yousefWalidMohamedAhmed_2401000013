@@ -1,64 +1,82 @@
 #include <iostream>
 using namespace std;
+
 class MinStack {
-   
 public:
     int* arr;
     int topIndex;
     int capacity;
     int minValue;
+
     MinStack() {
-        capacity=20;
+        capacity = 20;
         arr = new int[capacity];
-        topIndex=-1;
+        topIndex = -1;
         minValue = INT_MAX;
     }
-    ~MinStack(){delete[] arr;}
-    void resize(){
-        int newCapacity = capacity*2;
+
+    ~MinStack() {
+        delete[] arr;
+    }
+
+    void resize() {
+        int newCapacity = capacity * 2;
         int* newData = new int[newCapacity];
-        for(int i = 0;i<capacity;i++){
-            newData[i]=arr[i];
+        for (int i = 0; i < capacity; i++) {
+            newData[i] = arr[i];
         }
         delete[] arr;
         arr = newData;
         capacity = newCapacity;
-
     }
+
     void push(int val) {
-        if(capacity == topIndex+1){
+        if (topIndex + 1 == capacity) {
             resize();
         }
-        if(topIndex==-1 || minValue > val){
-            minValue=val;
+        if (topIndex == -1 || val < minValue) {
+            minValue = val;
         }
-        arr[++topIndex]=val;
+        arr[++topIndex] = val;
     }
-    
+
     void pop() {
-        if(topIndex<0){
+        if (topIndex < 0) {
+            cout << "Stack is empty!\n";
             return;
         }
-        int popped = top();
+
+        int popped = arr[topIndex];
         topIndex--;
-        if(popped == minValue && topIndex>=0){
-            minValue=arr[0];
-        for(int i;i<=topIndex;i++){
-           if(minValue > arr[i]){
-            minValue=arr[i];
-           }
+
+        if (topIndex < 0) {
+            minValue = INT_MAX;
+            return;
         }
-        }else if (topIndex < 0){
-            minValue=INT_MAX;
+
+        if (popped == minValue) {
+            minValue = arr[0];
+            for (int i = 1; i <= topIndex; i++) {
+                if (arr[i] < minValue) {
+                    minValue = arr[i];
+                }
+            }
         }
     }
-    
+
     int top() {
-         return arr[topIndex];
-         
+        if (topIndex < 0) {
+            cout << "Stack is empty!\n";
+            return -1;
+        }
+        return arr[topIndex];
     }
-    
+
     int getMin() {
+        if (topIndex < 0) {
+            cout << "Stack is empty!\n";
+            return -1;
+        }
         return minValue;
     }
 };
